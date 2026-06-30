@@ -3,18 +3,19 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from app.config import settings
 
-# Argumentos dinámicos según la base de datos
 connect_args = {}
 
+# Evaluamos si estamos en SQLite o en PostgreSQL (Supabase) con asyncpg
 if settings.DATABASE_URL.startswith("sqlite"):
-    # Parámetro necesario para la concurrencia de SQLite en FastAPI
     connect_args = {"check_same_thread": False}
 else:
-    # Configuración SSL para cuando vuelvas a Supabase
+    # Configuración de SSL segura y compatible con asyncpg para Supabase
     ssl_context = ssl.create_default_context()
     ssl_context.check_hostname = False
     ssl_context.verify_mode = ssl.CERT_NONE
-    connect_args = {"ssl": ssl_context, "command_timeout": 30}
+    
+    # Para asyncpg, pasamos el objeto SSLContext directamente en la llave "ssl"
+    connect_args = {"ssl": ssl_context}
 
 # Creamos el engine asíncrono
 engine = create_async_engine(
@@ -23,7 +24,6 @@ engine = create_async_engine(
     connect_args=connect_args
 )
 
-# Fábrica de sesiones asíncronas
 AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 class Base(DeclarativeBase):
