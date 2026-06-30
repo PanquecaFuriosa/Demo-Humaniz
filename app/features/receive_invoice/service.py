@@ -22,7 +22,6 @@ class ReceiveInvoiceService:
                 await db.commit()
 
                 # 3. Download image 
-                # CAMBIO: Pasamos el bloque del mensaje para desencriptación
                 saved_path = await whatsapp_gateway.download_image(message_content, message_id, sender)
                 if not saved_path:
                     audit_record.status = "FAILED"
@@ -34,7 +33,7 @@ class ReceiveInvoiceService:
                 audit_record.local_path = saved_path
                 await db.commit()
 
-                # 4. Process with AI -> ¡ESTO QUEDA EXACTAMENTE IGUAL!
+                # 4. Process with AI 
                 payment_data = await gemini_gateway.analyze_mobile_payment(saved_path)
                 if not payment_data:
                     audit_record.status = "FAILED"
@@ -43,7 +42,7 @@ class ReceiveInvoiceService:
                     await whatsapp_gateway.send_message(sender, "No logramos extraer los datos automáticamente.")
                     return
 
-                # 5. Save the successfully extracted data (Status: COMPLETED) -> IGUAL
+                # 5. Save the successfully extracted data (Status: COMPLETED) 
                 audit_record.issuing_bank = payment_data.issuing_bank
                 audit_record.reference = payment_data.reference
                 audit_record.amount = payment_data.amount

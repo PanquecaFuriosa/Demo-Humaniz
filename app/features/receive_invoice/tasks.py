@@ -13,7 +13,7 @@ def process_invoice_async(message_content: dict, sender: str, message_id: str):
     }
     
     response = requests.post(url_evolution, json=payload, headers=headers)
-    if response.status_code == 200:
+    if response.ok:
         # This returns the decrypted file as a Base64 string, ready for your OCR / AI logic
         base64_data = response.json().get("base64") 
         
