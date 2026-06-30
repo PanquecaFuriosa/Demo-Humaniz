@@ -33,10 +33,11 @@ async def receive_whatsapp_message(request: Request, background_tasks: Backgroun
             
             print(f"[Router] Image payload detected from sender {sender}. Handoff to async service worker pool...")
             
-            # Offload use-case orchestration to the service layer asynchronously
+            # CORRECCIÓN CRÍTICA: Cambiamos 'message_content' por 'message_data'
+            # para enviar el sobre completo (key + message) que exige la Evolution API
             background_tasks.add_task(
                 invoice_service.execute_processing, 
-                message_content, 
+                message_data,  # <--- Pasamos el bloque data completo
                 message_id, 
                 sender
             )
