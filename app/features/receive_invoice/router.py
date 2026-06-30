@@ -27,19 +27,16 @@ async def receive_whatsapp_message(request: Request, background_tasks: Backgroun
         
         # 4. Extract message body content
         message_content = message_data.get("message", {})
-        
+
         # --- CASE 1: IMAGE DETECTION ---
         if "imageMessage" in message_content:
             image_block = message_content["imageMessage"]
-            
-            # In Evolution API, you need the full message block to download the media later,
-            # but you can use the key ID as a reference identifier.
             message_id = key.get("id") 
             
             print(f"[Router] Image detected from {sender}. Scheduling background task...")
             
-            # Pass the structured data to your background worker
-            background_tasks.add_task(process_invoice_async, message_content, sender, message_id)
+            # CHANGE: Pass 'message_data' instead of 'message_content'
+            background_tasks.add_task(process_invoice_async, message_data, message_id, sender)
             
         # --- CASE 2: TEXT DETECTION ---
         elif "conversation" in message_content or "extendedTextMessage" in message_content:
