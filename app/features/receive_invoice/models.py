@@ -14,6 +14,7 @@ class InvoiceAudit(Base):
     
     # Fields extracted by AI (may be null initially while processing)
     issuing_bank: Mapped[str] = mapped_column(String(100), nullable=True)
+    receiving_bank: Mapped[str] = mapped_column(String(100), nullable=True)
     reference: Mapped[str] = mapped_column(String(100), nullable=True)
     amount: Mapped[float] = mapped_column(Float, nullable=True)
     

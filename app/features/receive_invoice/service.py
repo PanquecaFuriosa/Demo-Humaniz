@@ -113,7 +113,8 @@ class ReceiveInvoiceService:
     def _construct_success_message(self, data: MobilePaymentData) -> str:
         return (
             "*¡Pago Móvil Recibido y Registrado!*\n\n"
-            f"Banco: {data.issuing_bank}\n"
+            f"Banco emisor: {data.issuing_bank}\n"
+            f"Banco receptor: {data.receiving_bank}\n"
             f"Referencia: {data.reference}\n"
             f"Monto: {data.amount} Bs.\n"
             f"Fecha: {data.date}\n\n"
